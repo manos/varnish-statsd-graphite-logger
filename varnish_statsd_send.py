@@ -173,18 +173,3 @@ if __name__ == '__main__':
             notifier.stop()
             fh.close()
 
-    """ this shit doesn't work! (doesn't process >1 event)
-        while True:
-            try:
-                notifier.process_events()
-                if notifier.check_events():
-                    notifier.read_events()
-            except KeyboardInterrupt:
-                break
-
-            # cleanup: stop the inotify, and close the file handle:
-            finally:
-                notifier.stop()
-                fh.close()
-    """
-

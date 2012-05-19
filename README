@@ -5,7 +5,7 @@ Via inotify, it supports both truncation and log rotation by means of rename + r
 
 For every file IN_MODIFY event, the script reads the varnishncsa log, and sends a metric.
 
-FAQ: Q: why not use Etsy's Logster? A: it doesn't use inotify, and this was very important to use, due to dealing with > 15K req/s.
+FAQ: Q: why not use Etsy's Logster? A: it doesn't use inotify, and this was very important to us, due to dealing with > 15K req/s.
 
 Some things are pretty specific, like the use of kruxstatsd and our metrics layout - adjust to taste.
 
@@ -34,4 +34,7 @@ Notes:
 
 varnishncsa won't log every request, if they are served by pipelining (in varnish, I mean, where it supresses multiple backend requests for the same HTTP pipelined request). This sucks, when using 'ab' with a high concurrency to test.. but in production, we never see the same exact request from the same HTTP client pipelined, so it's really not a big deal. Something to be aware of, though.
 
+TODO:
+
+currently at log rotation, we (correctly) catch-up with missed events based upon the file handle cursor. But this leads to big spikes in graphs, at high traffic rates. Once varnish supports strftime() formatting (support is in master now, but not in a release), we should start logging that too, and send catch-up events directly to graphite with the correct timestamp.
 
