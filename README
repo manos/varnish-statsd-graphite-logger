@@ -1,0 +1,35 @@
+This is how we (at Krux) get varnish requests/s, hit / miss, and response time metrics in graphite.
+
+The script reads from a logfile (argument #1), using pyinotify.
+Via inotify, it supports both truncation and log rotation by means of rename + re-creation of the file.
+
+For every file IN_MODIFY event, the script reads the varnishncsa log, and sends a metric.
+
+Some things are pretty specific, like the use of kruxstatsd and our metrics layout - adjust to taste.
+
+Options:
+  -h, --help            show this help message and exit
+  --cluster=CLUSTER_NAME
+                        The cluster_name stats will be grouped in
+  --environment=ENVIRONMENT
+                        The (krux) environment the script is running in
+  --stdin               Instead of tailing a log file, read from stdin
+
+
+Usage:
+
+Run a varnishncsa daemon outputting the data this script expects:
+/usr/bin/varnishncsa -a -w /data/var/log/varnish/statsd_requests.log -F %U %{Varnish:time_firstbyte}x %{X-Request-Backend}o %{Varnish:hitmiss}x
+
+Run the script (via supervisor):
+python varnish_statsd_send.py --cluster=apiservices-a --environment=prod /data/var/log/varnish/statsd_requests.log
+
+Requires:
+    pyinotify
+    kruxstatsd (or implement your own mechanism for sending to statsd/graphite in the run() method.. see send_graphite.py for an example)
+
+Notes:
+
+varnishncsa won't log every request, if they are served by pipelining (in varnish, I mean, where it supresses multiple backend requests for the same HTTP pipelined request). This sucks, when using 'ab' with a high concurrency to test.. but in production, we never see the same exact request from the same HTTP client pipelined, so it's really not a big deal. Something to be aware of, though.
+
+
