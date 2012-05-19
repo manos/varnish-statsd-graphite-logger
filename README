@@ -5,6 +5,8 @@ Via inotify, it supports both truncation and log rotation by means of rename + r
 
 For every file IN_MODIFY event, the script reads the varnishncsa log, and sends a metric.
 
+FAQ: Q: why not use Etsy's Logster? A: it doesn't use inotify, and this was very important to use, due to dealing with > 15K req/s.
+
 Some things are pretty specific, like the use of kruxstatsd and our metrics layout - adjust to taste.
 
 Options:
