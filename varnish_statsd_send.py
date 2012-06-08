@@ -127,7 +127,7 @@ if __name__ == '__main__':
                     if curr_size < self.last_position_in_file:
                         sys.stdout.write("File was truncated! re-seeking to position 0..\n")
                         self.last_position_in_file = 0
-                        fh.seek(0)
+                        fh.seek(0) # always behind - need catch-up code here too! (see below in IN_CREATE)
 
                     try:
                         line = fh.readline()
