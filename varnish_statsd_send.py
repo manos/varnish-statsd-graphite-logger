@@ -147,10 +147,13 @@ if __name__ == '__main__':
                     global fh
                     fh.close()
                     fh = open(myfile, 'r')
-                    # catch up:
-                    print "My file was removed, then re-created! I'm now catching up with lines in the newly created file."
-                    for line in fh.readlines():
-                        run(line, k)
+                    # catch up: /!\ disabled, due to spikes in graphs, and resources consumed. Will re-enable, maybe, later, when it can
+                    #  send metrics it missed with the timestamp they occurred. a tiny gap is better for now.
+                    # Requires: unix epoch time formatting via strftime() in varnish (varnishncsa -F %{%s}t, which won't work
+                    #  until commit # (varnish/varnish-cache@0471b9b) is a stable/released version. (currently in varnish/master)
+                    #print "My file was removed, then re-created! I'm now catching up with lines in the newly created file."
+                    #for line in fh.readlines():
+                    #    run(line, k)
                     fh.seek(0,2)
                     self.last_position_in_file = fh.tell()
                 return
