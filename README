@@ -1,3 +1,7 @@
+Update: we stopped using this. varnishncsa sucks.
+This is better: https://github.com/jib/libvmod-statsd
+
+
 This is how we (at Krux) get varnish requests/s, hit / miss, and response time metrics in graphite.
 
 The script reads from a logfile (argument #1), using pyinotify.
